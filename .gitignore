@@ -6,3 +6,4 @@
 .pnp.*
 bin/*
 .env
+dist
