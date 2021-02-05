@@ -11,6 +11,30 @@ app.use(require('body-parser').json());
     executablePath: process.env.CHROMIUM_PATH,
     headless: true
   });
+  app.post('/page', async (req, res) => {
+    try {
+      const page = await browser.newPage();
+      const url = req.body.url
+      await page.setViewport({
+        width: 1280,
+        height: 720
+      })
+      await page.goto(url, {waitUntil: "networkidle2"})
+      
+      let r = await page.screenshot({ type: 'jpeg', encoding: 'binary' });
+      res.writeHead(200, {
+        'Content-Type': 'image/jpeg',
+        'Content-Length': r.length
+      });
+      res.end(r);
+      await page.close()
+    }catch(e){
+      res.status(500).json({
+        message: e.message,
+        stack: e.stack
+      })
+    }
+  })
   app.post('/', async (req, res) => {
     try {
       const page = await browser.newPage();
