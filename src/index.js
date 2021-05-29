@@ -36,11 +36,13 @@ app.use(require('body-parser').json());
     }
   })
   app.post('/', async (req, res) => {
+    let width = ~~req.body.width || 500
+    let height = ~~req.body.height || 1000
     try {
       const page = await browser.newPage();
       await page.setViewport({
-        width: 500,
-        height: 1000
+        width,
+        height
       })
       let content = `<style>html body {
         margin-top: 0px !important;
