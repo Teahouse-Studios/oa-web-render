@@ -19,8 +19,8 @@ app.use(require('body-parser').json());
         width: 1280,
         height: 720
       })
-      await page.goto(url, {waitUntil: "networkidle2"})
-      
+      await page.goto(url, { waitUntil: "networkidle2" })
+
       let r = await page.screenshot({ type: 'jpeg', encoding: 'binary' });
       res.writeHead(200, {
         'Content-Type': 'image/jpeg',
@@ -28,7 +28,7 @@ app.use(require('body-parser').json());
       });
       res.end(r);
       await page.close()
-    }catch(e){
+    } catch (e) {
       res.status(500).json({
         message: e.message,
         stack: e.stack
@@ -74,6 +74,23 @@ app.use(require('body-parser').json());
       });
       res.end(r);
       await page.close()
+    } catch (e) {
+      res.status(500).json({
+        message: e.message,
+        stack: e.stack
+      })
+    }
+  })
+  app.get('/source', async (req, res) => {
+    try {
+      const page = await browser.newPage();
+      const url = req.query.url
+      await page.setViewport({
+        width: 1280,
+        height: 720
+      })
+      const r = await page.goto(url, { waitUntil: "networkidle2" })
+      res.send(await r.text())
     } catch (e) {
       res.status(500).json({
         message: e.message,
