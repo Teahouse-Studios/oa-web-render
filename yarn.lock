@@ -55,14 +55,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vercel/ncc@npm:^0.29.2":
-  version: 0.29.2
-  resolution: "@vercel/ncc@npm:0.29.2"
+"@vercel/ncc@npm:^0.30.0":
+  version: 0.30.0
+  resolution: "@vercel/ncc@npm:0.30.0"
   dependencies:
     node-gyp: latest
   bin:
     ncc: dist/ncc/cli.js
-  checksum: 41b8d4fad0f771587381bd7ab55c424c8ab5fc005a0076606a8cc4146eedb8feeb28e15783b181845bbe2c39c3bd712b0cf202968b0683a093a8fd1378df3d71
+  checksum: a7a25cc56d4086751d6a3318743f0999ed0af78dad1ce7fa757c5577d6ff8d056fde6aa03cc4e08e50ab05c45b16b18cdd5671146f743a7b58acb6f1ef7f89dd
   languageName: node
   linkType: hard
 
@@ -1720,7 +1720,7 @@ fsevents@~2.3.1:
   version: 0.0.0-use.local
   resolution: "oasisakari-web-render@workspace:."
   dependencies:
-    "@vercel/ncc": ^0.29.2
+    "@vercel/ncc": ^0.30.0
     body-parser: ^1.19.0
     dotenv: ^10.0.0
     express: ^4.17.1

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set +e
+
+NODE_ENV=production node ./dist/index.js

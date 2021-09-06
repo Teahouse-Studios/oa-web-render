@@ -1,4 +1,5 @@
-require('dotenv').config()
+const { resolve } = require('path')
+require('dotenv').config({ path: resolve(__dirname, '../', process.env.NODE_ENV === 'production' ? '.env.production' : '.env') })
 const express = require('express')
 
 const puppeteer = require('puppeteer-core')
@@ -98,7 +99,7 @@ app.use(require('body-parser').json());
       })
     }
   })
-  app.listen(15551, () => {
-    console.log('start listening', new Date().valueOf())
-  })
+  const server = app.listen(~~process.env.FC_SERVER_PORT || 15551)
+  server.timeout = 0
+  server.keepAliveTimeout = 0
 })()

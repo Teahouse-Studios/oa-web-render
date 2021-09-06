@@ -8,3 +8,6 @@ bin/*
 .env
 dist
 .idea
+template.yml
+.env.production
+.fun
