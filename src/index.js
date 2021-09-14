@@ -92,7 +92,8 @@ app.use(require('body-parser').json());
         height: 720
       })
       const r = await page.goto(url, { waitUntil: "networkidle2" })
-      res.send(await r.text())
+      res.setHeader('content-type', r.headers()['content-type'])
+      res.send(await r.buffer())
     } catch (e) {
       res.status(500).json({
         message: e.message,
