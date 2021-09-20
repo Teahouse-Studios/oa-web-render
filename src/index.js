@@ -45,8 +45,11 @@ app.use(require('body-parser').json());
         width,
         height
       })
-      let content = `<style>html body {
+      let content = `<link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK&family=Noto+Sans+JP&family=Noto+Sans+KR&family=Noto+Sans+SC&family=Noto+Sans+TC&display=swap" rel="stylesheet"><style>html body {
         margin-top: 0px !important;
+        font-family: 'Noto Sans HK', 'Noto Sans JP','Noto Sans KR', 'Noto Sans SC', 'Noto Sans TC', sans-serif;
     }
     
     div.infobox div.notaninfobox{
