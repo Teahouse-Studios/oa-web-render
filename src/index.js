@@ -49,7 +49,27 @@ app.use(require('body-parser').json());
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
       <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK&family=Noto+Sans+JP&family=Noto+Sans+KR&family=Noto+Sans+SC&family=Noto+Sans+TC&display=swap" rel="stylesheet"><style>html body {
         margin-top: 0px !important;
-        font-family: 'Noto Sans HK', 'Noto Sans JP','Noto Sans KR', 'Noto Sans SC', 'Noto Sans TC', sans-serif;
+        font-family: 'Noto Sans SC', sans-serif;
+    }
+    
+    :lang(ko) {
+        font-family: 'Noto Sans KR', 'Noto Sans JP', 'Noto Sans HK', 'Noto Sans TC', 'Noto Sans SC', sans-serif;
+    }
+    
+    :lang(ja) {
+        font-family: 'Noto Sans JP', 'Noto Sans HK', 'Noto Sans TC', 'Noto Sans SC', 'Noto Sans KR', sans-serif;
+    }
+    
+    :lang(zh-TW) {
+        font-family: 'Noto Sans HK', 'Noto Sans TC', 'Noto Sans JP', 'Noto Sans SC', 'Noto Sans KR', sans-serif;
+    }
+    
+    :lang(zh-HK) {
+        font-family: 'Noto Sans HK', 'Noto Sans TC', 'Noto Sans JP', 'Noto Sans SC', 'Noto Sans KR', sans-serif;
+    }
+    
+    :lang(zh-Hans), :lang(zh-CN), :lang(zh) {
+        font-family:  'Noto Sans SC', 'Noto Sans HK', 'Noto Sans TC', 'Noto Sans JP', 'Noto Sans KR', sans-serif;
     }
     
     div.infobox div.notaninfobox{
