@@ -11,3 +11,4 @@ dist
 template.yml
 .env.production
 .fun
+node_modules

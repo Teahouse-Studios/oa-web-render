@@ -5,7 +5,9 @@ const express = require('express')
 const puppeteer = require('puppeteer-core')
 
 const app = express()
-app.use(require('body-parser').json());
+app.use(require('body-parser').json({
+  limit: '10mb'
+}));
 (async () => {
   const browser = await puppeteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
@@ -115,7 +117,9 @@ app.use(require('body-parser').json());
         height: 720
       })
       const r = await page.goto(url, { waitUntil: "networkidle2" })
-      res.setHeader('content-type', r.headers()['content-type'])
+      if(r.headers()['content-type']){
+        res.setHeader('content-type', r.headers()['content-type'])
+      }
       res.send(await r.buffer())
     } catch (e) {
       res.status(500).json({
