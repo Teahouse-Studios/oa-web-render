@@ -1,9 +1,9 @@
 const { resolve } = require('path')
 require('dotenv').config({ path: resolve(__dirname, '../', process.env.NODE_ENV === 'production' ? '.env.production' : '.env') })
 const express = require('express')
-
 const puppeteer = require('puppeteer-core')
-
+const mergeImg = require('merge-img')
+const Jimp = require('jimp')
 const app = express()
 app.use(require('body-parser').json({
   limit: '10mb'
@@ -93,12 +93,38 @@ app.use(require('body-parser').json({
       // lol
       await page.setContent(content, { waitUntil: 'networkidle0' });
       const el = await page.$('body > *:not(script):not(style):not(link):not(meta)')
-      let r = await el.screenshot({ type: 'jpeg', encoding: 'binary' });
+      const contentSize = await el.boundingBox()
+      const dpr = page.viewport().deviceScaleFactor || 1;
+      const maxScreenshotHeight = Math.floor(8 * 1024 / dpr);
+      const images = []
+      // https://bugs.chromium.org/p/chromium/issues/detail?id=770769
+      let total_content_height = 0
+      for (let ypos = 0; ypos < contentSize.height; ypos += maxScreenshotHeight) {
+        total_content_height += maxScreenshotHeight
+        let content_height = maxScreenshotHeight
+        if (total_content_height > contentSize.height) {
+          content_height = contentSize.height - total_content_height + maxScreenshotHeight
+        }
+        let r = await el.screenshot({
+          type: 'jpeg', encoding: 'binary', clip: {
+            x: 0,
+            y: ypos,
+            width: contentSize.width,
+            height: content_height
+          }
+        });
+        images.push(r)
+      }
+
+      let result = await mergeImg(images, { direction: true })
+      let read = await new Promise((resolve) => {
+        result.getBuffer(Jimp.MIME_JPEG, (err, buf) => resolve(buf))
+      })
       res.writeHead(200, {
         'Content-Type': 'image/jpeg',
-        'Content-Length': r.length
+        'Content-Length': read.length
       });
-      res.end(r);
+      res.end(read)
       await page.close()
     } catch (e) {
       res.status(500).json({
@@ -106,6 +132,7 @@ app.use(require('body-parser').json({
         stack: e.stack
       })
     }
+
   })
   app.get('/source', async (req, res) => {
     try {
@@ -117,7 +144,7 @@ app.use(require('body-parser').json({
         height: 720
       })
       const r = await page.goto(url, { waitUntil: "networkidle2" })
-      if(r.headers()['content-type']){
+      if (r.headers()['content-type']) {
         res.setHeader('content-type', r.headers()['content-type'])
       }
       res.send(await r.buffer())
