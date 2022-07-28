@@ -112,13 +112,13 @@ app.use(require('body-parser').json({
           width: contentSize.width,
           height: content_height
         }});
-        images.push(r)
+        images.push(await loadImage(r))
         }
 
       let image_width = 0
       let image_height = 0
-      for (let i = 0; i < images.length; i ++){
-        let load = await loadImage(images[i])
+      for (let i = 0; i < images.length; i++){
+        let load = images[i]
         if (load.width > image_width){
           image_width = load.width
         }
@@ -129,12 +129,10 @@ app.use(require('body-parser').json({
       let ctx = canvas.getContext('2d')
       let height_ = 0
       for (let i = 0; i < images.length; i++){
-        await loadImage(images[i]).then((image) =>{
-          ctx.drawImage(image, 0, height_)
-          height_ += image.height
+          ctx.drawImage(images[i], 0, height_)
+          height_ += images[i].height
         }
-        )
-      }
+        
       let read = canvas.toBuffer()
       res.writeHead(200, {
         'Content-Type': 'image/jpeg',
