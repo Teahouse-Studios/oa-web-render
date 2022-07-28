@@ -99,40 +99,43 @@ app.use(require('body-parser').json({
       const dpr = page.viewport().deviceScaleFactor || 1;
       const maxScreenshotHeight = Math.floor(8 * 1024 / dpr);
       const images = []
+      // https://bugs.chromium.org/p/chromium/issues/detail?id=770769
       let total_content_height = 0
-      for (let ypos = 0; ypos < contentSize.height; ypos += maxScreenshotHeight){
+      for (let ypos = 0; ypos < contentSize.height; ypos += maxScreenshotHeight) {
         total_content_height += maxScreenshotHeight
         let content_height = maxScreenshotHeight
-        if (total_content_height > contentSize.height){
+        if (total_content_height > contentSize.height) {
           content_height = contentSize.height - total_content_height + maxScreenshotHeight
         }
-        let r = await el.screenshot({ type: 'jpeg', encoding: 'binary', clip: {
-          x: 0,
-          y: ypos,
-          width: contentSize.width,
-          height: content_height
-        }});
+        let r = await el.screenshot({
+          type: 'jpeg', encoding: 'binary', clip: {
+            x: 0,
+            y: ypos,
+            width: contentSize.width,
+            height: content_height
+          }
+        });
         images.push(await loadImage(r))
-        }
+      }
 
       let image_width = 0
       let image_height = 0
-      for (let i = 0; i < images.length; i++){
+      for (let i = 0; i < images.length; i++) {
         let load = images[i]
-        if (load.width > image_width){
+        if (load.width > image_width) {
           image_width = load.width
         }
-        image_height += load.height  
+        image_height += load.height
       }
 
       const canvas = createCanvas(image_width, image_height)
       let ctx = canvas.getContext('2d')
       let height_ = 0
-      for (let i = 0; i < images.length; i++){
-          ctx.drawImage(images[i], 0, height_)
-          height_ += images[i].height
-        }
-        
+      for (let i = 0; i < images.length; i++) {
+        ctx.drawImage(images[i], 0, height_)
+        height_ += images[i].height
+      }
+
       let read = canvas.toBuffer()
       res.writeHead(200, {
         'Content-Type': 'image/jpeg',
@@ -140,13 +143,13 @@ app.use(require('body-parser').json({
       });
       res.end(read)
       await page.close()
-      } catch (e) {
-        res.status(500).json({
-          message: e.message,
-          stack: e.stack
-        })
-      }
-      
+    } catch (e) {
+      res.status(500).json({
+        message: e.message,
+        stack: e.stack
+      })
+    }
+
   })
   app.get('/source', async (req, res) => {
     try {
@@ -158,7 +161,7 @@ app.use(require('body-parser').json({
         height: 720
       })
       const r = await page.goto(url, { waitUntil: "networkidle2" })
-      if(r.headers()['content-type']){
+      if (r.headers()['content-type']) {
         res.setHeader('content-type', r.headers()['content-type'])
       }
       res.send(await r.buffer())
