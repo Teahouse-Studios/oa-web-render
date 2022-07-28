@@ -102,7 +102,7 @@ app.use(require('body-parser').json({
       let total_content_height = 0
       for (let ypos = 0; ypos < contentSize.height; ypos += maxScreenshotHeight){
         total_content_height += maxScreenshotHeight
-        content_height = maxScreenshotHeight
+        let content_height = maxScreenshotHeight
         if (total_content_height > contentSize.height){
           content_height = contentSize.height - total_content_height + maxScreenshotHeight
         }
@@ -118,7 +118,7 @@ app.use(require('body-parser').json({
       let image_width = 0
       let image_height = 0
       for (let i = 0; i < images.length; i ++){
-        load = await loadImage(images[i])
+        let load = await loadImage(images[i])
         if (load.width > image_width){
           image_width = load.width
         }
