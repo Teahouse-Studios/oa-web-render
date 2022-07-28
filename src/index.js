@@ -4,6 +4,8 @@ const express = require('express')
 
 const puppeteer = require('puppeteer-core')
 
+const { createCanvas, loadImage } = require('canvas')
+
 const app = express()
 app.use(require('body-parser').json({
   limit: '10mb'
@@ -93,19 +95,60 @@ app.use(require('body-parser').json({
       // lol
       await page.setContent(content, { waitUntil: 'networkidle0' });
       const el = await page.$('body > *:not(script):not(style):not(link):not(meta)')
-      let r = await el.screenshot({ type: 'jpeg', encoding: 'binary' });
+      const contentSize = await el.boundingBox()
+      const dpr = page.viewport().deviceScaleFactor || 1;
+      const maxScreenshotHeight = Math.floor(8 * 1024 / dpr);
+      const images = []
+      let total_content_height = 0
+      for (let ypos = 0; ypos < contentSize.height; ypos += maxScreenshotHeight){
+        total_content_height += maxScreenshotHeight
+        content_height = maxScreenshotHeight
+        if (total_content_height > contentSize.height){
+          content_height = contentSize.height - total_content_height + maxScreenshotHeight
+        }
+        let r = await el.screenshot({ type: 'jpeg', encoding: 'binary', clip: {
+          x: 0,
+          y: ypos,
+          width: contentSize.width,
+          height: content_height
+        }});
+        images.push(r)
+        }
+
+      let image_width = 0
+      let image_height = 0
+      for (let i = 0; i < images.length; i ++){
+        load = await loadImage(images[i])
+        if (load.width > image_width){
+          image_width = load.width
+        }
+        image_height += load.height  
+      }
+
+      const canvas = createCanvas(image_width, image_height)
+      let ctx = canvas.getContext('2d')
+      let height_ = 0
+      for (let i = 0; i < images.length; i++){
+        await loadImage(images[i]).then((image) =>{
+          ctx.drawImage(image, 0, height_)
+          height_ += image.height
+        }
+        )
+      }
+      let read = canvas.toBuffer()
       res.writeHead(200, {
         'Content-Type': 'image/jpeg',
-        'Content-Length': r.length
+        'Content-Length': read.length
       });
-      res.end(r);
+      res.end(read)
       await page.close()
-    } catch (e) {
-      res.status(500).json({
-        message: e.message,
-        stack: e.stack
-      })
-    }
+      } catch (e) {
+        res.status(500).json({
+          message: e.message,
+          stack: e.stack
+        })
+      }
+      
   })
   app.get('/source', async (req, res) => {
     try {
