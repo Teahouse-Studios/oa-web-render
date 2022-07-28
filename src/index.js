@@ -1,11 +1,9 @@
 const { resolve } = require('path')
 require('dotenv').config({ path: resolve(__dirname, '../', process.env.NODE_ENV === 'production' ? '.env.production' : '.env') })
 const express = require('express')
-
 const puppeteer = require('puppeteer-core')
-
-const { createCanvas, loadImage } = require('canvas')
-
+const mergeImg = require('merge-img')
+const Jimp = require('jimp')
 const app = express()
 app.use(require('body-parser').json({
   limit: '10mb'
@@ -115,28 +113,13 @@ app.use(require('body-parser').json({
             height: content_height
           }
         });
-        images.push(await loadImage(r))
+        images.push(r)
       }
 
-      let image_width = 0
-      let image_height = 0
-      for (let i = 0; i < images.length; i++) {
-        let load = images[i]
-        if (load.width > image_width) {
-          image_width = load.width
-        }
-        image_height += load.height
-      }
-
-      const canvas = createCanvas(image_width, image_height)
-      let ctx = canvas.getContext('2d')
-      let height_ = 0
-      for (let i = 0; i < images.length; i++) {
-        ctx.drawImage(images[i], 0, height_)
-        height_ += images[i].height
-      }
-
-      let read = canvas.toBuffer()
+      let result = await mergeImg(images, { direction: true })
+      let read = await new Promise((resolve) => {
+        result.getBuffer(Jimp.MIME_JPEG, (err, buf) => resolve(buf))
+      })
       res.writeHead(200, {
         'Content-Type': 'image/jpeg',
         'Content-Length': read.length
