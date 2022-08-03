@@ -95,7 +95,7 @@ app.use(require('body-parser').json({
       const el = await page.$('body > *:not(script):not(style):not(link):not(meta)')
       const contentSize = await el.boundingBox()
       const dpr = page.viewport().deviceScaleFactor || 1;
-      const maxScreenshotHeight = Math.floor(8 * 1024 / dpr); + contentSize.y
+      const maxScreenshotHeight = Math.floor(8 * 1024 / dpr) + contentSize.y
       const images = []
       // https://bugs.chromium.org/p/chromium/issues/detail?id=770769
       let total_content_height = 0
