@@ -95,15 +95,15 @@ app.use(require('body-parser').json({
       const el = await page.$('body > *:not(script):not(style):not(link):not(meta)')
       const contentSize = await el.boundingBox()
       const dpr = page.viewport().deviceScaleFactor || 1;
-      const maxScreenshotHeight = Math.floor(8 * 1024 / dpr) + contentSize.y
+      const maxScreenshotHeight = Math.floor(8 * 1024 / dpr) 
       const images = []
       // https://bugs.chromium.org/p/chromium/issues/detail?id=770769
       let total_content_height = 0
-      for (let ypos = contentSize.y; ypos < contentSize.height; ypos += maxScreenshotHeight) {
+      for (let ypos = contentSize.y; ypos < contentSize.height + contentSize.y; ypos += maxScreenshotHeight) {
         total_content_height += maxScreenshotHeight
         let content_height = maxScreenshotHeight
-        if (total_content_height > contentSize.height) {
-          content_height = contentSize.height - total_content_height + maxScreenshotHeight
+        if (total_content_height > contentSize.height + contentSize.y) {
+          content_height = contentSize.height - total_content_height + maxScreenshotHeight + contentSize.y
         }
         let r = await el.screenshot({
           type: 'jpeg', encoding: 'binary', clip: {
