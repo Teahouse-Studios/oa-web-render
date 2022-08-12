@@ -149,6 +149,7 @@ app.use(require('body-parser').json({
       if (content){
         await page.setContent(content, { waitUntil: 'networkidle0' });
       } else if (url){
+        await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36')
         await page.goto(url, { waitUntil: "networkidle0" })
       } else {
         res.status(500).json({
