@@ -3,8 +3,10 @@ require('dotenv').config({ path: resolve(__dirname, '../', process.env.NODE_ENV 
 const express = require('express')
 const puppeteer = require('puppeteer-core')
 const mergeImg = require('merge-img')
+const compression = require('compression')
 const Jimp = require('jimp')
 const app = express()
+app.use(compression())
 app.use(require('body-parser').json({
   limit: '10mb'
 }));
