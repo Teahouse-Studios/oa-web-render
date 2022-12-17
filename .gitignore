@@ -8,7 +8,7 @@ bin/*
 .env
 dist
 .idea
-template.yml
+s.yaml
 .env.production
-.fun
+.s
 node_modules

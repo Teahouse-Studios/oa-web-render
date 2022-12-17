@@ -1,7 +1,7 @@
 const { resolve } = require('path')
 require('dotenv').config({ path: resolve(__dirname, '../', process.env.NODE_ENV === 'production' ? '.env.production' : '.env') })
 const express = require('express')
-const puppeteer = require('puppeteer-core')
+const puppeteer = require(process.env.NODE_ENV === 'production' ? 'puppeteer' : 'puppeteer-core')
 const mergeImg = require('merge-img')
 const compression = require('compression')
 const Jimp = require('jimp')
@@ -13,7 +13,7 @@ app.use(require('body-parser').json({
 (async () => {
   const browser = await puppeteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    executablePath: process.env.CHROMIUM_PATH,
+    executablePath: process.env.NODE_ENV === 'production' ? undefined : process.env.CHROMIUM_PATH,
     headless: true
   });
   app.post('/page', async (req, res) => {
@@ -82,7 +82,7 @@ app.use(require('body-parser').json({
         margin: 0 0 0 0!important;
     }
     
-    table.infobox {
+    table.infobox, table.infoboxSpecial, table.moe-infobox {
         width: 100%!important;
         float: unset!important;
         margin: 0 0 0 0!important;
@@ -91,13 +91,11 @@ app.use(require('body-parser').json({
     <body>
     ${req.body.content}
     </body>`
-      // chromium is strong enough to render the weird "html"
-      // lol
       await page.setContent(content, { waitUntil: 'networkidle0' });
       const el = await page.$('body > *:not(script):not(style):not(link):not(meta)')
       const contentSize = await el.boundingBox()
       const dpr = page.viewport().deviceScaleFactor || 1;
-      const maxScreenshotHeight = Math.floor(8 * 1024 / dpr) 
+      const maxScreenshotHeight = Math.floor(8 * 1024 / dpr)
       const images = []
       // https://bugs.chromium.org/p/chromium/issues/detail?id=770769
       let total_content_height = contentSize.y
@@ -136,7 +134,7 @@ app.use(require('body-parser').json({
     }
 
   })
-  app.post('/element_screenshot' , async (req, res) => {
+  app.post('/element_screenshot', async (req, res) => {
     let width = ~~req.body.width || 720
     let height = ~~req.body.height || 1280
     let element = req.body.element
@@ -148,9 +146,9 @@ app.use(require('body-parser').json({
         width,
         height
       })
-      if (content){
+      if (content) {
         await page.setContent(content, { waitUntil: 'networkidle0' });
-      } else if (url){
+      } else if (url) {
         await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36')
         await page.goto(url, { waitUntil: "networkidle0" })
       } else {
@@ -161,10 +159,10 @@ app.use(require('body-parser').json({
       }
 
       const el = await page.$(element)
-      page.addStyleTag({'content': `${element} {z-index: 99999999999999999999999999999}`})
+      page.addStyleTag({ 'content': `${element} {z-index: 99999999999999999999999999999}` })
       const contentSize = await el.boundingBox()
       const dpr = page.viewport().deviceScaleFactor || 1;
-      const maxScreenshotHeight = Math.floor(8 * 1024 / dpr) 
+      const maxScreenshotHeight = Math.floor(8 * 1024 / dpr)
       const images = []
       // https://bugs.chromium.org/p/chromium/issues/detail?id=770769
       let total_content_height = contentSize.y
@@ -184,7 +182,7 @@ app.use(require('body-parser').json({
         });
         images.push(r)
       }
-      
+
 
       let result = await mergeImg(images, { direction: true })
       let read = await new Promise((resolve) => {
@@ -198,12 +196,12 @@ app.use(require('body-parser').json({
       await page.close()
 
     } catch (e) {
-        res.status(500).json({
-          message: e.message,
-          stack: e.stack
-        })
-      }
-  
+      res.status(500).json({
+        message: e.message,
+        stack: e.stack
+      })
+    }
+
   }
 
   )

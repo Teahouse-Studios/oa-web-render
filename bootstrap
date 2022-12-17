@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
 set +e
 
-NODE_ENV=production node ./dist/index.js
+export PATH=/opt/nodejs16/bin:$PATH
+export NODE_PATH=/opt/nodejs/node_modules
+export LD_LIBRARY_PATH=/opt/lib
+
+NODE_ENV=production node ./index.js
