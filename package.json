@@ -2,7 +2,7 @@
   "name": "oasisakari-web-render",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "build": "rimraf dist && ncc build src/index.js -m && node cp.js",
+    "build": "rimraf dist && ncc build src/index.js -m -e puppeteer -e puppeteer-core --target es2022 && node cp.js",
     "deploy": "s deploy -t s.yaml"
   },
   "dependencies": {

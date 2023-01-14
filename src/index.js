@@ -1,5 +1,5 @@
 const { resolve } = require('path')
-require('dotenv').config({ path: resolve(__dirname, '../', process.env.NODE_ENV === 'production' ? '.env.production' : '.env') })
+require('dotenv').config({ path: resolve(__dirname, '../.env') })
 const express = require('express')
 const puppeteer = require(process.env.NODE_ENV === 'production' ? 'puppeteer' : 'puppeteer-core')
 const mergeImg = require('merge-img')
@@ -17,8 +17,8 @@ app.use(require('body-parser').json({
     headless: true
   });
   app.post('/page', async (req, res) => {
+    const page = await browser.newPage();
     try {
-      const page = await browser.newPage();
       const url = req.body.url
       await page.setViewport({
         width: 1280,
@@ -32,19 +32,20 @@ app.use(require('body-parser').json({
         'Content-Length': r.length
       });
       res.end(r);
-      await page.close()
     } catch (e) {
       res.status(500).json({
         message: e.message,
         stack: e.stack
       })
+    } finally {
+      await page.close()
     }
   })
   app.post('/', async (req, res) => {
     let width = ~~req.body.width || 500
     let height = ~~req.body.height || 1000
+    const page = await browser.newPage();
     try {
-      const page = await browser.newPage();
       await page.setViewport({
         width,
         height
@@ -125,12 +126,13 @@ app.use(require('body-parser').json({
         'Content-Length': read.length
       });
       res.end(read)
-      await page.close()
     } catch (e) {
       res.status(500).json({
         message: e.message,
         stack: e.stack
       })
+    } finally {
+      await page.close()
     }
 
   })
@@ -140,8 +142,8 @@ app.use(require('body-parser').json({
     let element = req.body.element
     let content = req.body.content
     let url = req.body.url
+    const page = await browser.newPage();
     try {
-      const page = await browser.newPage();
       await page.setViewport({
         width,
         height
@@ -193,21 +195,20 @@ app.use(require('body-parser').json({
         'Content-Length': read.length
       });
       res.end(read)
-      await page.close()
-
     } catch (e) {
       res.status(500).json({
         message: e.message,
         stack: e.stack
       })
+    } finally {
+      await page.close()
     }
-
   }
 
   )
   app.get('/source', async (req, res) => {
+    const page = await browser.newPage();
     try {
-      const page = await browser.newPage();
       await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36')
       const url = req.query.url
       await page.setViewport({
@@ -224,6 +225,8 @@ app.use(require('body-parser').json({
         message: e.message,
         stack: e.stack
       })
+    } finally {
+      await page.close()
     }
   })
   const server = app.listen(~~process.env.FC_SERVER_PORT || 15551)
