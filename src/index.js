@@ -292,7 +292,7 @@ app.use(require('body-parser').json({
         'Content-Length': read.length
       });
       res.end(read)
-      // await page.close()
+      await page.close()
 
     } catch (e) {
       res.status(500).json({
