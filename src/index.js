@@ -201,10 +201,106 @@ app.use(require('body-parser').json({
         stack: e.stack
       })
     }
+  })
+  app.post('/section_screenshot', async (req, res) => {
+    let width = ~~req.body.width || 1080
+    let height = ~~req.body.height || 1920
+    let section = req.body.section
+    let content = req.body.content
+    let url = req.body.url
+    console.log(req.body)
+    try {
+      const page = await browser.newPage();
+      await page.setViewport({
+        width,
+        height
+      })
+      if (content) {
+        await page.setContent(content, { waitUntil: 'networkidle0' });
+      } else if (url) {
+        await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36')
+        await page.goto(url, { waitUntil: "networkidle0" })
+      } else {
+        res.status(500).json({
+          message: 'A url or content must be specified.'
+        })
+        return
+      }
+      
+      await page.evaluate((section) => {
+        const levels = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6']
+        const sec = document.getElementById(section).parentNode
+        const sec_level = sec.tagName 
+        const nbox = document.createElement('div')
+        nbox.className = 'bot-sectionbox'
+        nbox.style = 'display: inline-block; padding: 15px'
+        nbox.appendChild(sec.cloneNode(true))
+        let next_sibling = sec.nextSibling
+        while(true){
+          if (next_sibling == null){
+            break
+          }
+          if (levels.includes(next_sibling.tagName)){
+            if (levels.indexOf(next_sibling.tagName) <= levels.indexOf(sec_level)){
+              break
+            }
+          }
+          nbox.appendChild(next_sibling.cloneNode(true))
+          next_sibling = next_sibling.nextSibling
+        }
+        const lazyimg = nbox.querySelectorAll(".lazyload")
+        for (var i = 0; i < lazyimg.length; i++){
+            lazyimg[i].className = 'image'
+            lazyimg[i].src = lazyimg[i].getAttribute('data-src')
+        }
+        sec.parentNode.appendChild(nbox)
+      }, section)
 
-  }
+      const el = await page.$('.bot-sectionbox')
+      page.addStyleTag({ 'content': `.bot-sectionbox {z-index: 99999999999999999999999999999}` })
+      const contentSize = await el.boundingBox()
+    
+      const dpr = page.viewport().deviceScaleFactor || 1;
+      const maxScreenshotHeight = Math.floor(8 * 1024 / dpr)
+      const images = []
+      // https://bugs.chromium.org/p/chromium/issues/detail?id=770769
+      let total_content_height = contentSize.y
+      for (let ypos = contentSize.y; ypos < contentSize.height + contentSize.y; ypos += maxScreenshotHeight) {
+        total_content_height += maxScreenshotHeight
+        let content_height = maxScreenshotHeight
+        if (total_content_height > contentSize.height + contentSize.y) {
+          content_height = contentSize.height - total_content_height + maxScreenshotHeight + contentSize.y
+        }
+        let r = await el.screenshot({
+          type: 'jpeg', encoding: 'binary', clip: {
+            x: contentSize.x,
+            y: ypos,
+            width: contentSize.width,
+            height: content_height
+          }
+        });
+        images.push(r)
+      }
 
-  )
+
+      let result = await mergeImg(images, { direction: true })
+      let read = await new Promise((resolve) => {
+        result.getBuffer(Jimp.MIME_JPEG, (err, buf) => resolve(buf))
+      })
+      res.writeHead(200, {
+        'Content-Type': 'image/jpeg',
+        'Content-Length': read.length
+      });
+      res.end(read)
+      await page.close()
+
+    } catch (e) {
+      res.status(500).json({
+        message: e.message,
+        stack: e.stack
+      })
+    }
+  })
   app.get('/source', async (req, res) => {
     try {
       const page = await browser.newPage();
