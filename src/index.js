@@ -211,8 +211,8 @@ app.use(require('body-parser').json({
     let content = req.body.content
     let url = req.body.url
     console.log(req.body)
+    const page = await browser.newPage();
     try {
-      const page = await browser.newPage();
       await page.setViewport({
         width,
         height
@@ -294,13 +294,13 @@ app.use(require('body-parser').json({
         'Content-Length': read.length
       });
       res.end(read)
-      await page.close()
-
     } catch (e) {
       res.status(500).json({
         message: e.message,
         stack: e.stack
       })
+    } finally {
+      await page.close()
     }
   })
   app.get('/source', async (req, res) => {
