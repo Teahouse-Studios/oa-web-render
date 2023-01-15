@@ -178,7 +178,6 @@ app.use(require('body-parser').json({
       if (Array.isArray(element)){
         for (var i = 0; i < element.length; i++){
           var el = await page.$(element[i])
-          console.log(el)
           if (el != null){
             selected_element = element[i]
             break
@@ -235,7 +234,7 @@ app.use(require('body-parser').json({
         stack: e.stack
       })
     } finally {
-      // await page.close()
+      await page.close()
     }
   })
   app.post('/section_screenshot', async (req, res) => {
@@ -244,7 +243,6 @@ app.use(require('body-parser').json({
     let section = req.body.section
     let content = req.body.content
     let url = req.body.url
-    console.log(req.body)
     const page = await browser.newPage();
     try {
       await page.setViewport({
@@ -307,7 +305,6 @@ app.use(require('body-parser').json({
       }
       page.addStyleTag({ 'content': `.mw-parser-output {z-index: 99999999999999999999999999999; position: sticky}` })
       const contentSize = await el.boundingBox()
-      console.log(contentSize)
 
       const dpr = page.viewport().deviceScaleFactor || 1;
       const maxScreenshotHeight = Math.floor(8 * 1024 / dpr)
