@@ -253,10 +253,10 @@ app.use(require('body-parser').json({
         height
       })
       if (content) {
-        await page.setContent(content, { waitUntil: 'networkidle0' });
+        await page.setContent(content, { waitUntil: 'networkidle2' });
       } else if (url) {
         await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36')
-        await page.goto(url, { waitUntil: "networkidle0" })
+        await page.goto(url, { waitUntil: "networkidle2" })
       } else {
         res.status(500).json({
           message: 'A url or content must be specified.'
@@ -298,9 +298,6 @@ app.use(require('body-parser').json({
         const sitenotice = document.querySelector('.sitenotice--visible') // :rina:
         if (sitenotice != null){
           sitenotice.style = 'display: none'}
-        document.querySelectorAll('*').forEach(element => {
-          element.parentNode.replaceChild(element.cloneNode(true), element);
-        });
         window.scroll(0,0)
       }, section)
 
