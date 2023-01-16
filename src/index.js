@@ -170,10 +170,10 @@ app.use(require('body-parser').json({
         for (var i = 0; i < animated.length; i++){
           animated[i].className = 'nolongeranimatebaka'
         }
-        window.scroll(0,0)
         document.querySelectorAll('*').forEach(element => {
           element.parentNode.replaceChild(element.cloneNode(true), element);
         });
+        window.scroll(0,0)
       })
 
       let selected_element = null
@@ -298,10 +298,10 @@ app.use(require('body-parser').json({
         const sitenotice = document.querySelector('.sitenotice--visible') // :rina:
         if (sitenotice != null){
           sitenotice.style = 'display: none'}
-        window.scroll(0,0)
         document.querySelectorAll('*').forEach(element => {
           element.parentNode.replaceChild(element.cloneNode(true), element);
         });
+        window.scroll(0,0)
       }, section)
 
 
@@ -313,7 +313,7 @@ app.use(require('body-parser').json({
         return
       }
       page.addStyleTag({ 'content': `.mw-parser-output {z-index: 99999999999999999999999999999}` })
-      const contentSize = await el.boundingBox()
+      const contentSize = await (await page.$('.mw-parser-output')).boundingBox()
 
       const dpr = page.viewport().deviceScaleFactor || 1;
       const maxScreenshotHeight = Math.floor(8 * 1024 / dpr)
