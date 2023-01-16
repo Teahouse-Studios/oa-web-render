@@ -107,7 +107,7 @@ app.use(require('body-parser').json({
           content_height = contentSize.height - total_content_height + maxScreenshotHeight + contentSize.y
         }
         let r = await el.screenshot({
-          type: 'jpeg', encoding: 'binary', clip: {
+          type: 'jpeg', quality: 90, encoding: 'binary', clip: {
             x: contentSize.x,
             y: ypos,
             width: contentSize.width,
@@ -208,7 +208,7 @@ app.use(require('body-parser').json({
           content_height = contentSize.height - total_content_height + maxScreenshotHeight + contentSize.y
         }
         let r = await el.screenshot({
-          type: 'jpeg', encoding: 'binary', clip: {
+          type: 'jpeg', quality: 90, encoding: 'binary', clip: {
             x: contentSize.x,
             y: ypos,
             width: contentSize.width,
@@ -292,9 +292,10 @@ app.use(require('body-parser').json({
         pparentNode.removeChild(sec.parentNode)
         pparentNode.appendChild(new_parentNode)
         new_parentNode.appendChild(nbox)
-        window.scroll(0,0)
         const sitenotice = document.querySelector('.sitenotice--visible') // :rina:
-        sitenotice.style = 'display: none'
+        if (sitenotice != null){
+          sitenotice.style = 'display: none'}
+          window.scroll(0,0)
       }, section)
 
       const el = await page.$('.bot-sectionbox')
@@ -303,7 +304,7 @@ app.use(require('body-parser').json({
           message: 'No given elements matches the selector.'
         })
       }
-      page.addStyleTag({ 'content': `.mw-parser-output {z-index: 99999999999999999999999999999; position: sticky}` })
+      page.addStyleTag({ 'content': `.mw-parser-output {z-index: 99999999999999999999999999999}` })
       const contentSize = await el.boundingBox()
 
       const dpr = page.viewport().deviceScaleFactor || 1;
@@ -318,7 +319,7 @@ app.use(require('body-parser').json({
           content_height = contentSize.height - total_content_height + maxScreenshotHeight + contentSize.y
         }
         let r = await el.screenshot({
-          type: 'jpeg', encoding: 'binary', clip: {
+          type: 'jpeg', quality: 90, encoding: 'binary', clip: {
             x: contentSize.x,
             y: ypos,
             width: contentSize.width,
