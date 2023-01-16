@@ -170,6 +170,12 @@ app.use(require('body-parser').json({
         for (var i = 0; i < animated.length; i++){
           animated[i].className = 'nolongeranimatebaka'
         }
+        const sitenotice = document.querySelector('.sitenotice--visible') // :rina:
+        if (sitenotice != null){
+          sitenotice.style = 'display: none'}
+        const top_ads = document.querySelector('.top-ads-container') // :rina: :rina:
+        if (top_ads != null){
+          top_ads.style = 'display: none'}
         document.querySelectorAll('*').forEach(element => {
           element.parentNode.replaceChild(element.cloneNode(true), element);
         });
@@ -298,7 +304,7 @@ app.use(require('body-parser').json({
         const sitenotice = document.querySelector('.sitenotice--visible') // :rina:
         if (sitenotice != null){
           sitenotice.style = 'display: none'}
-        const top_ads = document.querySelector('.top-ads-container') // :rina:
+        const top_ads = document.querySelector('.top-ads-container') // :rina: :rina:
         if (top_ads != null){
           top_ads.style = 'display: none'}
         document.querySelectorAll('*').forEach(element => {
