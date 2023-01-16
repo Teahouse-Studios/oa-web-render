@@ -107,7 +107,7 @@ app.use(require('body-parser').json({
           content_height = contentSize.height - total_content_height + maxScreenshotHeight + contentSize.y
         }
         let r = await el.screenshot({
-          type: 'jpeg', encoding: 'binary', clip: {
+          type: 'jpeg', quality: 90, encoding: 'binary', clip: {
             x: contentSize.x,
             y: ypos,
             width: contentSize.width,
@@ -160,9 +160,42 @@ app.use(require('body-parser').json({
         return
       }
 
-      const el = await page.$(element)
-      page.addStyleTag({ 'content': `${element} {z-index: 99999999999999999999999999999}` })
+      await page.evaluate(() => {
+        const lazyimg = document.querySelectorAll(".lazyload")
+        for (var i = 0; i < lazyimg.length; i++){
+            lazyimg[i].className = 'image'
+            lazyimg[i].src = lazyimg[i].getAttribute('data-src')
+        }
+        const animated = document.querySelectorAll(".animated")
+        for (var i = 0; i < animated.length; i++){
+          animated[i].className = 'nolongeranimatebaka'
+        }
+        window.scroll(0,0)
+      })
+
+      let selected_element = null
+
+      if (Array.isArray(element)){
+        for (var i = 0; i < element.length; i++){
+          var el = await page.$(element[i])
+          if (el != null){
+            selected_element = element[i]
+            break
+          }
+        }
+      } else {
+        var el = await page.$(element)}
+        selected_element = element
+      if (el == null){
+        res.status(500).json({
+          message: 'No given elements matches the selector.'
+        })
+      }
+      
+      page.addStyleTag({ 'content': `${selected_element} {z-index: 99999999999999999999999999999}` })
+      
       const contentSize = await el.boundingBox()
+      console.log
       const dpr = page.viewport().deviceScaleFactor || 1;
       const maxScreenshotHeight = Math.floor(8 * 1024 / dpr)
       const images = []
@@ -175,7 +208,7 @@ app.use(require('body-parser').json({
           content_height = contentSize.height - total_content_height + maxScreenshotHeight + contentSize.y
         }
         let r = await el.screenshot({
-          type: 'jpeg', encoding: 'binary', clip: {
+          type: 'jpeg', quality: 90, encoding: 'binary', clip: {
             x: contentSize.x,
             y: ypos,
             width: contentSize.width,
@@ -205,12 +238,11 @@ app.use(require('body-parser').json({
     }
   })
   app.post('/section_screenshot', async (req, res) => {
-    let width = ~~req.body.width || 1080
-    let height = ~~req.body.height || 1920
+    let width = ~~req.body.width || 1920
+    let height = ~~req.body.height || 1080
     let section = req.body.section
     let content = req.body.content
     let url = req.body.url
-    console.log(req.body)
     const page = await browser.newPage();
     try {
       await page.setViewport({
@@ -255,11 +287,24 @@ app.use(require('body-parser').json({
             lazyimg[i].className = 'image'
             lazyimg[i].src = lazyimg[i].getAttribute('data-src')
         }
-        sec.parentNode.appendChild(nbox)
+        const new_parentNode = sec.parentNode.cloneNode()
+        const pparentNode = sec.parentNode.parentNode
+        pparentNode.removeChild(sec.parentNode)
+        pparentNode.appendChild(new_parentNode)
+        new_parentNode.appendChild(nbox)
+        const sitenotice = document.querySelector('.sitenotice--visible') // :rina:
+        if (sitenotice != null){
+          sitenotice.style = 'display: none'}
+          window.scroll(0,0)
       }, section)
 
       const el = await page.$('.bot-sectionbox')
-      page.addStyleTag({ 'content': `.bot-sectionbox {z-index: 99999999999999999999999999999}` })
+      if (el == null){
+        res.status(500).json({
+          message: 'No given elements matches the selector.'
+        })
+      }
+      page.addStyleTag({ 'content': `.mw-parser-output {z-index: 99999999999999999999999999999}` })
       const contentSize = await el.boundingBox()
 
       const dpr = page.viewport().deviceScaleFactor || 1;
@@ -274,7 +319,7 @@ app.use(require('body-parser').json({
           content_height = contentSize.height - total_content_height + maxScreenshotHeight + contentSize.y
         }
         let r = await el.screenshot({
-          type: 'jpeg', encoding: 'binary', clip: {
+          type: 'jpeg', quality: 90, encoding: 'binary', clip: {
             x: contentSize.x,
             y: ypos,
             width: contentSize.width,
