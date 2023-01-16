@@ -193,6 +193,7 @@ app.use(require('body-parser').json({
         res.status(500).json({
           message: 'No given elements matches the selector.'
         })
+        return
       }
       
       page.addStyleTag({ 'content': `${selected_element} {z-index: 99999999999999999999999999999}` })
@@ -309,6 +310,7 @@ app.use(require('body-parser').json({
         res.status(500).json({
           message: 'No given elements matches the selector.'
         })
+        return
       }
       page.addStyleTag({ 'content': `.mw-parser-output {z-index: 99999999999999999999999999999}` })
       const contentSize = await el.boundingBox()
