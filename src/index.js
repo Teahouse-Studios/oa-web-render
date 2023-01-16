@@ -171,7 +171,9 @@ app.use(require('body-parser').json({
           animated[i].className = 'nolongeranimatebaka'
         }
         window.scroll(0,0)
-        debugger;
+        document.querySelectorAll('*').forEach(element => {
+          element.parentNode.replaceChild(element.cloneNode(true), element);
+        });
       })
 
       let selected_element = null
@@ -234,7 +236,7 @@ app.use(require('body-parser').json({
         stack: e.stack
       })
     } finally {
-      // await page.close()
+      await page.close()
     }
   })
   app.post('/section_screenshot', async (req, res) => {
@@ -296,7 +298,9 @@ app.use(require('body-parser').json({
         if (sitenotice != null){
           sitenotice.style = 'display: none'}
         window.scroll(0,0)
-        debugger;
+        document.querySelectorAll('*').forEach(element => {
+          element.parentNode.replaceChild(element.cloneNode(true), element);
+        });
       }, section)
 
 
