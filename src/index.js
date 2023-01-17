@@ -1,3 +1,4 @@
+const elements_to_disable = ['.sitenotice--visible', '.top-ads-container', '.fandom-sticky-header', 'div#WikiaBar', '.n-modal-container']
 const { resolve } = require('path')
 require('dotenv').config({ path: resolve(__dirname, '../.env') })
 const express = require('express')
@@ -170,12 +171,11 @@ app.use(require('body-parser').json({
         for (var i = 0; i < animated.length; i++){
           animated[i].className = 'nolongeranimatebaka'
         }
-        const sitenotice = document.querySelector('.sitenotice--visible') // :rina:
-        if (sitenotice != null){
-          sitenotice.style = 'display: none'}
-        const top_ads = document.querySelector('.top-ads-container') // :rina: :rina:
-        if (top_ads != null){
-          top_ads.style = 'display: none'}
+        for (var i = 0; i < elements_to_disable.length; i++){
+          const element_to_boom = document.querySelector(elements_to_disable[i])// :rina: :rina: :rina: :rina:
+          if (element_to_boom != null){
+            element_to_boom.style = 'display: none'}
+        }
         document.querySelectorAll('*').forEach(element => {
           element.parentNode.replaceChild(element.cloneNode(true), element);
         });
@@ -301,12 +301,11 @@ app.use(require('body-parser').json({
         pparentNode.removeChild(sec.parentNode)
         pparentNode.appendChild(new_parentNode)
         new_parentNode.appendChild(nbox)
-        const sitenotice = document.querySelector('.sitenotice--visible') // :rina:
-        if (sitenotice != null){
-          sitenotice.style = 'display: none'}
-        const top_ads = document.querySelector('.top-ads-container') // :rina: :rina:
-        if (top_ads != null){
-          top_ads.style = 'display: none'}
+        for (var i = 0; i < elements_to_disable.length; i++){
+          const element_to_boom = document.querySelector(elements_to_disable[i])// :rina: :rina: :rina: :rina:
+          if (element_to_boom != null){
+            element_to_boom.style = 'display: none'}
+        }
         document.querySelectorAll('*').forEach(element => {
           element.parentNode.replaceChild(element.cloneNode(true), element);
         });
