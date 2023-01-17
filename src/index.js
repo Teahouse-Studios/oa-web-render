@@ -310,7 +310,7 @@ app.use(require('body-parser').json({
           element.parentNode.replaceChild(element.cloneNode(true), element);
         });
         window.scroll(0,0)
-      }, (section, elements_to_disable))
+      }, section, elements_to_disable)
 
 
       const el = await page.$('.bot-sectionbox')
