@@ -161,7 +161,7 @@ app.use(require('body-parser').json({
         return
       }
 
-      await page.evaluate(() => {
+      await page.evaluate((elements_to_disable) => {
         const lazyimg = document.querySelectorAll(".lazyload")
         for (var i = 0; i < lazyimg.length; i++){
             lazyimg[i].className = 'image'
@@ -180,7 +180,7 @@ app.use(require('body-parser').json({
           element.parentNode.replaceChild(element.cloneNode(true), element);
         });
         window.scroll(0,0)
-      })
+      }, elements_to_disable)
 
       let selected_element = null
 
@@ -270,7 +270,7 @@ app.use(require('body-parser').json({
         return
       }
 
-      await page.evaluate((section) => {
+      await page.evaluate((section, elements_to_disable) => {
         const levels = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6']
         const sec = document.getElementById(section).parentNode
         const sec_level = sec.tagName
@@ -310,7 +310,7 @@ app.use(require('body-parser').json({
           element.parentNode.replaceChild(element.cloneNode(true), element);
         });
         window.scroll(0,0)
-      }, section)
+      }, (section, elements_to_disable))
 
 
       const el = await page.$('.bot-sectionbox')
