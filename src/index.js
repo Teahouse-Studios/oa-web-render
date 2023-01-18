@@ -1,4 +1,5 @@
-const elements_to_disable = ['.sitenotice--visible', '.top-ads-container', '.fandom-sticky-header', 'div#WikiaBar', '.n-modal-container', 'div#moe-float-toc-container']
+const elements_to_disable = ['.sitenotice--visible', '.top-ads-container', '.fandom-sticky-header', 'div#WikiaBar', '.n-modal-container',
+'div#moe-float-toc-container', 'div#moe-draw-float-button', 'div#moe-global-header', '.mys-wrapper', 'div#moe-open-in-app']
 const { resolve } = require('path')
 require('dotenv').config({ path: resolve(__dirname, '../.env') })
 const express = require('express')
