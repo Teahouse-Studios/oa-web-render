@@ -97,7 +97,6 @@ app.use(require('body-parser').json({
       await page.setContent(content, { waitUntil: 'networkidle0' });
       const el = await page.$('body > .mw-parser-output > *:not(script):not(style):not(link):not(meta)')
       const contentSize = await el.boundingBox()
-      console.log(contentSize)
       const dpr = page.viewport().deviceScaleFactor || 1;
       const maxScreenshotHeight = Math.floor(8 * 1024 / dpr)
       const images = []
