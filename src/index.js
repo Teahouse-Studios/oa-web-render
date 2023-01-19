@@ -46,6 +46,7 @@ app.use(require('body-parser').json({
   app.post('/', async (req, res) => {
     let width = ~~req.body.width || 500
     let height = ~~req.body.height || 1000
+    let mw = ~~req.body.mw || true
     const page = await browser.newPage();
     try {
       await page.setViewport({
@@ -95,7 +96,13 @@ app.use(require('body-parser').json({
     ${req.body.content}
     </body>`
       await page.setContent(content, { waitUntil: 'networkidle0' });
-      const el = await page.$('body > .mw-parser-output > *:not(script):not(style):not(link):not(meta)')
+      const selector = null
+      if (mw){
+        selector = 'body > .mw-parser-output > *:not(script):not(style):not(link):not(meta)'
+      } else {
+        selector = 'body > *:not(script):not(style):not(link):not(meta)'
+      }
+      const el = await page.$(selector)
       const contentSize = await el.boundingBox()
       const dpr = page.viewport().deviceScaleFactor || 1;
       const maxScreenshotHeight = Math.floor(8 * 1024 / dpr)
