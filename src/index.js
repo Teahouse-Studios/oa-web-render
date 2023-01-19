@@ -321,8 +321,8 @@ app.use(require('body-parser').json({
         })
         return
       }
-      page.addStyleTag({ 'content': `.mw-parser-output {z-index: 99999999999999999999999999999}` })
-      const contentSize = await (await page.$('.mw-parser-output')).boundingBox()
+      page.addStyleTag({ 'content': `.bot-sectionbox {z-index: 99999999999999999999999999999}` })
+      const contentSize = await (await page.$('.bot-sectionbox')).boundingBox()
 
       const dpr = page.viewport().deviceScaleFactor || 1;
       const maxScreenshotHeight = Math.floor(8 * 1024 / dpr)
