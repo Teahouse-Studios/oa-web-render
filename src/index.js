@@ -46,7 +46,7 @@ app.use(require('body-parser').json({
   app.post('/', async (req, res) => {
     let width = ~~req.body.width || 500
     let height = ~~req.body.height || 1000
-    let mw = ~~req.body.mw || true
+    let mw = req.body.mw
     const page = await browser.newPage();
     try {
       await page.setViewport({
@@ -96,7 +96,7 @@ app.use(require('body-parser').json({
     ${req.body.content}
     </body>`
       await page.setContent(content, { waitUntil: 'networkidle0' });
-      const selector = null
+      let selector = null
       if (mw){
         selector = 'body > .mw-parser-output > *:not(script):not(style):not(link):not(meta)'
       } else {
