@@ -1,4 +1,4 @@
-const elements_to_disable = ['.sitenotice--visible', '.top-ads-container', '.fandom-sticky-header', 'div#WikiaBar', '.n-modal-container',
+const elements_to_disable = ['.sitenotice--visible', '.top-ads-container', '.fandom-sticky-header', 'div#WikiaBar', 'aside.page__right-rail', '.n-modal-container',
 'div#moe-float-toc-container', 'div#moe-draw-float-button', 'div#moe-global-header', '.mys-wrapper', 'div#moe-open-in-app']
 const { resolve } = require('path')
 require('dotenv').config({ path: resolve(__dirname, '../.env') })
@@ -7,6 +7,16 @@ const puppeteer = require(process.env.NODE_ENV === 'production' ? 'puppeteer' : 
 const mergeImg = require('merge-img')
 const compression = require('compression')
 const Jimp = require('jimp')
+const fs = require('fs')
+const uuid = require('uuid')
+const cwd = process.cwd()
+const cache_path = cwd + '/cache/'
+
+if (fs.existsSync(cache_path)) {
+  fs.rmSync(cache_path, { recursive: true, force: true });
+ }
+fs.mkdirSync(cache_path)
+
 const app = express()
 app.use(compression())
 app.use(require('body-parser').json({
@@ -39,6 +49,7 @@ app.use(require('body-parser').json({
         message: e.message,
         stack: e.stack
       })
+      return
     } finally {
       await page.close()
     }
@@ -47,7 +58,12 @@ app.use(require('body-parser').json({
     let width = ~~req.body.width || 500
     let height = ~~req.body.height || 1000
     let mw = req.body.mw
+    let tracing = ~~req.body.tracing || false
+    let tracing_json = cache_path + uuid.v4() + '.json'
     const page = await browser.newPage();
+    if (tracing){
+      await page.tracing.start({'path': tracing_json})
+    }
     try {
       await page.setViewport({
         width,
@@ -96,6 +112,9 @@ app.use(require('body-parser').json({
     ${req.body.content}
     </body>`
       await page.setContent(content, { waitUntil: 'networkidle0' });
+      if (tracing){
+        await page.tracing.stop()
+      }
       let selector = null
       if (mw){
         selector = 'body > .mw-parser-output > *:not(script):not(style):not(link):not(meta)'
@@ -132,7 +151,8 @@ app.use(require('body-parser').json({
       })
       res.writeHead(200, {
         'Content-Type': 'image/jpeg',
-        'Content-Length': read.length
+        'Content-Length': read.length,
+        'Tracing': tracing ? tracing_json : null
       });
       res.end(read)
     } catch (e) {
@@ -151,7 +171,12 @@ app.use(require('body-parser').json({
     let element = req.body.element
     let content = req.body.content
     let url = req.body.url
+    let tracing = ~~req.body.tracing || false
+    let tracing_json = cache_path + uuid.v4() + '.json'
     const page = await browser.newPage();
+    if (tracing){
+      await page.tracing.start({'path': tracing_json})
+    }
     try {
       await page.setViewport({
         width,
@@ -161,7 +186,7 @@ app.use(require('body-parser').json({
         await page.setContent(content, { waitUntil: 'networkidle2' });
       } else if (url) {
         await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36')
-        await page.goto(url, { waitUntil: "networkidle2" })
+        await page.goto(url, { waitUntil: "networkidle2", timeout: 0 })
       } else {
         res.status(500).json({
           message: 'A url or content must be specified.'
@@ -211,6 +236,10 @@ app.use(require('body-parser').json({
       }
       
       page.addStyleTag({ 'content': `${selected_element} {z-index: 99999999999999999999999999999}` })
+
+      if (tracing){
+        await page.tracing.stop()
+      }
       
       const contentSize = await el.boundingBox()
       const dpr = page.viewport().deviceScaleFactor || 1;
@@ -242,7 +271,8 @@ app.use(require('body-parser').json({
       })
       res.writeHead(200, {
         'Content-Type': 'image/jpeg',
-        'Content-Length': read.length
+        'Content-Length': read.length,
+        'Tracing': tracing ? tracing_json : null
       });
       res.end(read)
     } catch (e) {
@@ -260,7 +290,12 @@ app.use(require('body-parser').json({
     let section = req.body.section
     let content = req.body.content
     let url = req.body.url
+    let tracing = ~~req.body.tracing || false
+    let tracing_json = cache_path + uuid.v4() + '.json'
     const page = await browser.newPage();
+    if (tracing){
+      await page.tracing.start({'path': tracing_json})
+    }
     try {
       await page.setViewport({
         width,
@@ -331,6 +366,10 @@ app.use(require('body-parser').json({
       page.addStyleTag({ 'content': `.bot-sectionbox {z-index: 99999999999999999999999999999}` })
       const contentSize = await (await page.$('.bot-sectionbox')).boundingBox()
 
+      if (tracing){
+        await page.tracing.stop()
+      }
+
       const dpr = page.viewport().deviceScaleFactor || 1;
       const maxScreenshotHeight = Math.floor(8 * 1024 / dpr)
       const images = []
@@ -360,7 +399,8 @@ app.use(require('body-parser').json({
       })
       res.writeHead(200, {
         'Content-Type': 'image/jpeg',
-        'Content-Length': read.length
+        'Content-Length': read.length,
+        'Tracing': tracing ? tracing_json : null
       });
       res.end(read)
     } catch (e) {
