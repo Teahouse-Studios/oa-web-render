@@ -202,6 +202,12 @@ app.use(require('body-parser').json({
         }
         const animated = document.querySelectorAll(".animated")
         for (var i = 0; i < animated.length; i++){
+          b = animated[i].querySelectorAll('img')
+          for (ii=0; ii < b.length ; ii++){
+              console.log(b[ii].getAttribute('width'))
+              b[ii].width = b[ii].getAttribute('width') / (b.length / 2)
+              b[ii].height = b[ii].getAttribute('height') / (b.length / 2)
+          }
           animated[i].className = 'nolongeranimatebaka'
         }
         for (var i = 0; i < elements_to_disable.length; i++){
@@ -338,6 +344,16 @@ app.use(require('body-parser').json({
         for (var i = 0; i < lazyimg.length; i++){
             lazyimg[i].className = 'image'
             lazyimg[i].src = lazyimg[i].getAttribute('data-src')
+        }
+        const animated = document.querySelectorAll(".animated")
+        for (var i = 0; i < animated.length; i++){
+          b = animated[i].querySelectorAll('img')
+          for (ii=0; ii < b.length ; ii++){
+              console.log(b[ii].getAttribute('width'))
+              b[ii].width = b[ii].getAttribute('width') / (b.length / 2)
+              b[ii].height = b[ii].getAttribute('height') / (b.length / 2)
+          }
+          animated[i].className = 'nolongeranimatebaka'
         }
         const new_parentNode = sec.parentNode.cloneNode()
         const pparentNode = sec.parentNode.parentNode
