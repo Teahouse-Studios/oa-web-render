@@ -204,7 +204,6 @@ app.use(require('body-parser').json({
         for (var i = 0; i < animated.length; i++){
           b = animated[i].querySelectorAll('img')
           for (ii=0; ii < b.length ; ii++){
-              console.log(b[ii].getAttribute('width'))
               b[ii].width = b[ii].getAttribute('width') / (b.length / 2)
               b[ii].height = b[ii].getAttribute('height') / (b.length / 2)
           }
@@ -349,7 +348,6 @@ app.use(require('body-parser').json({
         for (var i = 0; i < animated.length; i++){
           b = animated[i].querySelectorAll('img')
           for (ii=0; ii < b.length ; ii++){
-              console.log(b[ii].getAttribute('width'))
               b[ii].width = b[ii].getAttribute('width') / (b.length / 2)
               b[ii].height = b[ii].getAttribute('height') / (b.length / 2)
           }
