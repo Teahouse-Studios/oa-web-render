@@ -344,15 +344,6 @@ app.use(require('body-parser').json({
             lazyimg[i].className = 'image'
             lazyimg[i].src = lazyimg[i].getAttribute('data-src')
         }
-        const animated = nbox.querySelectorAll(".animated")
-        for (var i = 0; i < animated.length; i++){
-          b = animated[i].querySelectorAll('img')
-          for (ii=0; ii < b.length ; ii++){
-              b[ii].width = b[ii].getAttribute('width') / (b.length / 2)
-              b[ii].height = b[ii].getAttribute('height') / (b.length / 2)
-          }
-          animated[i].className = 'nolongeranimatebaka'
-        }
         const new_parentNode = sec.parentNode.cloneNode()
         const pparentNode = sec.parentNode.parentNode
         pparentNode.removeChild(sec.parentNode)
