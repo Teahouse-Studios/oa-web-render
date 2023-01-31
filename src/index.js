@@ -344,7 +344,7 @@ app.use(require('body-parser').json({
             lazyimg[i].className = 'image'
             lazyimg[i].src = lazyimg[i].getAttribute('data-src')
         }
-        const animated = document.querySelectorAll(".animated")
+        const animated = nbox.querySelectorAll(".animated")
         for (var i = 0; i < animated.length; i++){
           b = animated[i].querySelectorAll('img')
           for (ii=0; ii < b.length ; ii++){
