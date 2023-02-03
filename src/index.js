@@ -1,5 +1,5 @@
 const elements_to_disable = ['.sitenotice--visible', '.top-ads-container', '.fandom-sticky-header', 'div#WikiaBar', 'aside.page__right-rail', '.n-modal-container',
-'div#moe-float-toc-container', 'div#moe-draw-float-button', 'div#moe-global-header', '.mys-wrapper', 'div#moe-open-in-app']
+  'div#moe-float-toc-container', 'div#moe-draw-float-button', 'div#moe-global-header', '.mys-wrapper', 'div#moe-open-in-app']
 const { resolve } = require('path')
 require('dotenv').config({ path: resolve(__dirname, '../.env') })
 const express = require('express')
@@ -14,8 +14,16 @@ const cache_path = cwd + '/cache/'
 
 if (fs.existsSync(cache_path)) {
   fs.rmSync(cache_path, { recursive: true, force: true });
- }
+}
 fs.mkdirSync(cache_path)
+
+const heimu_css = `
+span.heimu a.external, span.heimu a.external:visited, span.heimu a.extiw, span.heimu a.extiw:visited {
+  color: #252525;}
+.heimu, .heimu a, a .heimu, .heimu a.new {
+  background-color: #cccccc;
+  text-shadow: none;
+}`
 
 const app = express()
 app.use(compression())
@@ -61,8 +69,8 @@ app.use(require('body-parser').json({
     let tracing = ~~req.body.tracing || false
     let tracing_json = cache_path + uuid.v4() + '.json'
     const page = await browser.newPage();
-    if (tracing){
-      await page.tracing.start({'path': tracing_json})
+    if (tracing) {
+      await page.tracing.start({ 'path': tracing_json })
     }
     try {
       await page.setViewport({
@@ -112,11 +120,11 @@ app.use(require('body-parser').json({
     ${req.body.content}
     </body>`
       await page.setContent(content, { waitUntil: 'networkidle0' });
-      if (tracing){
+      if (tracing) {
         await page.tracing.stop()
       }
       let selector = null
-      if (mw){
+      if (mw) {
         selector = 'body > .mw-parser-output > *:not(script):not(style):not(link):not(meta)'
       } else {
         selector = 'body > *:not(script):not(style):not(link):not(meta)'
@@ -174,8 +182,8 @@ app.use(require('body-parser').json({
     let tracing = ~~req.body.tracing || false
     let tracing_json = cache_path + uuid.v4() + '.json'
     const page = await browser.newPage();
-    if (tracing){
-      await page.tracing.start({'path': tracing_json})
+    if (tracing) {
+      await page.tracing.start({ 'path': tracing_json })
     }
     try {
       await page.setViewport({
@@ -193,59 +201,62 @@ app.use(require('body-parser').json({
         })
         return
       }
+      await page.addStyleTag({ 'content': heimu_css })
 
       await page.evaluate((elements_to_disable) => {
         const lazyimg = document.querySelectorAll(".lazyload")
-        for (var i = 0; i < lazyimg.length; i++){
-            lazyimg[i].className = 'image'
-            lazyimg[i].src = lazyimg[i].getAttribute('data-src')
+        for (var i = 0; i < lazyimg.length; i++) {
+          lazyimg[i].className = 'image'
+          lazyimg[i].src = lazyimg[i].getAttribute('data-src')
         }
         const animated = document.querySelectorAll(".animated")
-        for (var i = 0; i < animated.length; i++){
+        for (var i = 0; i < animated.length; i++) {
           b = animated[i].querySelectorAll('img')
-          for (ii=0; ii < b.length ; ii++){
-              b[ii].width = b[ii].getAttribute('width') / (b.length / 2)
-              b[ii].height = b[ii].getAttribute('height') / (b.length / 2)
+          for (ii = 0; ii < b.length; ii++) {
+            b[ii].width = b[ii].getAttribute('width') / (b.length / 2)
+            b[ii].height = b[ii].getAttribute('height') / (b.length / 2)
           }
           animated[i].className = 'nolongeranimatebaka'
         }
-        for (var i = 0; i < elements_to_disable.length; i++){
+        for (var i = 0; i < elements_to_disable.length; i++) {
           const element_to_boom = document.querySelector(elements_to_disable[i])// :rina: :rina: :rina: :rina:
-          if (element_to_boom != null){
-            element_to_boom.style = 'display: none'}
+          if (element_to_boom != null) {
+            element_to_boom.style = 'display: none'
+          }
         }
         document.querySelectorAll('*').forEach(element => {
           element.parentNode.replaceChild(element.cloneNode(true), element);
         });
-        window.scroll(0,0)
+        window.scroll(0, 0)
       }, elements_to_disable)
 
       let selected_element = null
 
-      if (Array.isArray(element)){
-        for (var i = 0; i < element.length; i++){
+      if (Array.isArray(element)) {
+        for (var i = 0; i < element.length; i++) {
           var el = await page.$(element[i])
-          if (el != null){
+          if (el != null) {
             selected_element = element[i]
             break
           }
         }
       } else {
-        var el = await page.$(element)}
-        selected_element = element
-      if (el == null){
+        var el = await page.$(element)
+      }
+      selected_element = element
+      if (el == null) {
         res.status(500).json({
           message: 'No given elements matches the selector.'
         })
         return
       }
-      
+
       page.addStyleTag({ 'content': `${selected_element} {z-index: 99999999999999999999999999999}` })
 
-      if (tracing){
+      if (tracing) {
         await page.tracing.stop()
       }
-      
+
       const contentSize = await el.boundingBox()
       const dpr = page.viewport().deviceScaleFactor || 1;
       const maxScreenshotHeight = Math.floor(8 * 1024 / dpr)
@@ -298,8 +309,8 @@ app.use(require('body-parser').json({
     let tracing = ~~req.body.tracing || false
     let tracing_json = cache_path + uuid.v4() + '.json'
     const page = await browser.newPage();
-    if (tracing){
-      await page.tracing.start({'path': tracing_json})
+    if (tracing) {
+      await page.tracing.start({ 'path': tracing_json })
     }
     try {
       await page.setViewport({
@@ -317,6 +328,7 @@ app.use(require('body-parser').json({
         })
         return
       }
+      await page.addStyleTag({ 'content': heimu_css })
 
       await page.evaluate((section, elements_to_disable) => {
         const levels = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6']
@@ -327,12 +339,12 @@ app.use(require('body-parser').json({
         nbox.style = 'display: inline-block; padding: 15px'
         nbox.appendChild(sec.cloneNode(true))
         let next_sibling = sec.nextSibling
-        while(true){
-          if (next_sibling == null){
+        while (true) {
+          if (next_sibling == null) {
             break
           }
-          if (levels.includes(next_sibling.tagName)){
-            if (levels.indexOf(next_sibling.tagName) <= levels.indexOf(sec_level)){
+          if (levels.includes(next_sibling.tagName)) {
+            if (levels.indexOf(next_sibling.tagName) <= levels.indexOf(sec_level)) {
               break
             }
           }
@@ -340,29 +352,30 @@ app.use(require('body-parser').json({
           next_sibling = next_sibling.nextSibling
         }
         const lazyimg = nbox.querySelectorAll(".lazyload")
-        for (var i = 0; i < lazyimg.length; i++){
-            lazyimg[i].className = 'image'
-            lazyimg[i].src = lazyimg[i].getAttribute('data-src')
+        for (var i = 0; i < lazyimg.length; i++) {
+          lazyimg[i].className = 'image'
+          lazyimg[i].src = lazyimg[i].getAttribute('data-src')
         }
         const new_parentNode = sec.parentNode.cloneNode()
         const pparentNode = sec.parentNode.parentNode
         pparentNode.removeChild(sec.parentNode)
         pparentNode.appendChild(new_parentNode)
         new_parentNode.appendChild(nbox)
-        for (var i = 0; i < elements_to_disable.length; i++){
+        for (var i = 0; i < elements_to_disable.length; i++) {
           const element_to_boom = document.querySelector(elements_to_disable[i])// :rina: :rina: :rina: :rina:
-          if (element_to_boom != null){
-            element_to_boom.style = 'display: none'}
+          if (element_to_boom != null) {
+            element_to_boom.style = 'display: none'
+          }
         }
         document.querySelectorAll('*').forEach(element => {
           element.parentNode.replaceChild(element.cloneNode(true), element);
         });
-        window.scroll(0,0)
+        window.scroll(0, 0)
       }, section, elements_to_disable)
 
 
       const el = await page.$('.bot-sectionbox')
-      if (el == null){
+      if (el == null) {
         res.status(500).json({
           message: 'No given elements matches the selector.'
         })
@@ -371,7 +384,7 @@ app.use(require('body-parser').json({
       page.addStyleTag({ 'content': `.bot-sectionbox {z-index: 99999999999999999999999999999}` })
       const contentSize = await (await page.$('.bot-sectionbox')).boundingBox()
 
-      if (tracing){
+      if (tracing) {
         await page.tracing.stop()
       }
 
