@@ -40,13 +40,13 @@ app.use(require('body-parser').json({
     const page = await browser.newPage();
     try {
       const url = req.body.url
-      const css = req.body.css || ''
+      const css = req.body.css
       await page.setViewport({
         width: 1280,
         height: 720
       })
       await page.goto(url, { waitUntil: "networkidle2" })
-      if (css != '') {
+      if (css) {
         page.addStyleTag({ 'content': css })
       }
 
@@ -184,7 +184,7 @@ app.use(require('body-parser').json({
     let content = req.body.content
     let url = req.body.url
     let tracing = ~~req.body.tracing || false
-    let css = req.body.css || ''
+    let css = req.body.css
     let tracing_json = cache_path + uuid.v4() + '.json'
     const page = await browser.newPage();
     if (tracing) {
@@ -277,7 +277,7 @@ app.use(require('body-parser').json({
       }, selected_element, endtime)
 
       page.addStyleTag({ 'content': `${selected_element} {z-index: 99999999999999999999999999999}` })
-      if (css != '') {
+      if (css) {
         page.addStyleTag({ 'content': css })
       }
 
@@ -335,7 +335,7 @@ app.use(require('body-parser').json({
     let content = req.body.content
     let url = req.body.url
     let tracing = ~~req.body.tracing || false
-    let css = req.body.css || ''
+    let css = req.body.css
     let tracing_json = cache_path + uuid.v4() + '.json'
     const page = await browser.newPage();
     if (tracing) {
@@ -431,7 +431,7 @@ app.use(require('body-parser').json({
       }, endtime)
 
       page.addStyleTag({ 'content': `.bot-sectionbox {z-index: 99999999999999999999999999999}` })
-      if (css != '') {
+      if (css) {
         page.addStyleTag({ 'content': css })
       }
       const contentSize = await (await page.$('.bot-sectionbox')).boundingBox()
