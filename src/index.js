@@ -208,6 +208,9 @@ app.use(require('body-parser').json({
         return
       }
       await page.addStyleTag({ 'content': heimu_css })
+      if (css) {
+        page.addStyleTag({ 'content': css })
+      }
 
       await page.evaluate((elements_to_disable) => {
 
@@ -277,9 +280,6 @@ app.use(require('body-parser').json({
       }, selected_element, endtime)
 
       page.addStyleTag({ 'content': `${selected_element} {z-index: 99999999999999999999999999999}` })
-      if (css) {
-        page.addStyleTag({ 'content': css })
-      }
 
       if (tracing) {
         await page.tracing.stop()
@@ -359,6 +359,9 @@ app.use(require('body-parser').json({
         return
       }
       await page.addStyleTag({ 'content': heimu_css })
+      if (css) {
+        page.addStyleTag({ 'content': css })
+      }
 
       await page.evaluate((section, elements_to_disable) => {
         const levels = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6']
@@ -431,9 +434,6 @@ app.use(require('body-parser').json({
       }, endtime)
 
       page.addStyleTag({ 'content': `.bot-sectionbox {z-index: 99999999999999999999999999999}` })
-      if (css) {
-        page.addStyleTag({ 'content': css })
-      }
       const contentSize = await (await page.$('.bot-sectionbox')).boundingBox()
 
       if (tracing) {
