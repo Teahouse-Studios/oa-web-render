@@ -1,5 +1,5 @@
 const elements_to_disable = ['.notifications-placeholder', '.top-ads-container', '.fandom-sticky-header', 'div#WikiaBar', 'aside.page__right-rail', '.n-modal-container',
-  'div#moe-float-toc-container', 'div#moe-draw-float-button', 'div#moe-global-header', '.mys-wrapper', 'div#moe-open-in-app']
+  'div#moe-float-toc-container', 'div#moe-draw-float-button', 'div#moe-global-header', '.mys-wrapper', 'div#moe-open-in-app', 'div#age-gate']
 const { resolve } = require('path')
 require('dotenv').config({ path: resolve(__dirname, '../.env') })
 const express = require('express')
@@ -433,6 +433,7 @@ app.use(require('body-parser').json({
             if (lefttime <= 0) {
               return;
             }
+            
             setTimeout(countTime, 1000);
           }
 
