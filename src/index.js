@@ -1,4 +1,5 @@
 const debug = false
+const user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36'
 const elements_to_disable = ['.notifications-placeholder', '.top-ads-container', '.fandom-sticky-header', 'div#WikiaBar', 'aside.page__right-rail', '.n-modal-container',
   'div#moe-float-toc-container', 'div#moe-draw-float-button', 'div#moe-global-header', '.mys-wrapper', 'div#moe-open-in-app', 'div#age-gate']
 const { resolve } = require('path')
@@ -98,7 +99,7 @@ app.use(require('body-parser').json({
         width: 1280,
         height: 720
       })
-      await page.goto(url, { waitUntil: "networkidle0" })
+      await page.goto(url, { waitUntil: "networkidle2" })
       if (css) {
         page.addStyleTag({ 'content': css })
       }
@@ -176,7 +177,7 @@ app.use(require('body-parser').json({
     <body>
     ${req.body.content}
     </body>`
-      await page.setContent(content, { waitUntil: 'networkidle2' });
+      await page.setContent(content, { waitUntil: 'networkidle0' });
       if (tracing) {
         await page.tracing.stop()
       }
@@ -227,7 +228,7 @@ app.use(require('body-parser').json({
       if (content) {
         await page.setContent(content, { waitUntil: 'networkidle2' });
       } else if (url) {
-        await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36')
+        await page.setUserAgent(user_agent)
         await page.goto(url, { waitUntil: "networkidle2", timeout: 0 })
       } else {
         res.status(500).json({
@@ -337,7 +338,7 @@ app.use(require('body-parser').json({
       if (content) {
         await page.setContent(content, { waitUntil: 'networkidle2' });
       } else if (url) {
-        await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36')
+        await page.setUserAgent(user_agent)
         await page.goto(url, { waitUntil: "networkidle2" })
       } else {
         res.status(500).json({
@@ -433,7 +434,7 @@ app.use(require('body-parser').json({
   app.get('/source', async (req, res) => {
     const page = await browser.newPage();
     try {
-      await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36')
+      await page.setUserAgent(user_agent)
       const url = req.query.url
       await page.setViewport({
         width: 1280,
