@@ -19,13 +19,21 @@ if (fs.existsSync(cache_path)) {
 }
 fs.mkdirSync(cache_path)
 
-const heimu_css = `
+const custom_css = `
 span.heimu a.external, span.heimu a.external:visited, span.heimu a.extiw, span.heimu a.extiw:visited {
   color: #252525;}
 .heimu, .heimu a, a .heimu, .heimu a.new {
   background-color: #cccccc;
   text-shadow: none;
-}`
+}
+.tabber-container-infobox ul.tabbernav {
+  display: none;
+}
+
+.tabber-container-infobox .tabber .tabbertab {
+  display: unset !important;
+}
+`
 
 
 async function makeScreenshot(page, el) {
@@ -236,7 +244,7 @@ app.use(require('body-parser').json({
         })
         return
       }
-      await page.addStyleTag({ 'content': heimu_css })
+      await page.addStyleTag({ 'content': custom_css })
       if (css) {
         page.addStyleTag({ 'content': css })
       }
@@ -346,7 +354,7 @@ app.use(require('body-parser').json({
         })
         return
       }
-      await page.addStyleTag({ 'content': heimu_css })
+      await page.addStyleTag({ 'content': custom_css })
       if (css) {
         page.addStyleTag({ 'content': css })
       }
