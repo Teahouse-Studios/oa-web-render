@@ -403,7 +403,7 @@ app.use(require('body-parser').json({
       }, section, elements_to_disable)
 
 
-      const el = await page.$('.bot-sectionbox')
+      let el = await page.$('.bot-sectionbox')
       if (el == null) {
         res.status(500).json({
           message: 'No given elements matches the selector.'
