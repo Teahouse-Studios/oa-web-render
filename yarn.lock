@@ -3861,6 +3861,7 @@ fsevents@~2.3.2:
     nodemon: ^2.0.20
     puppeteer-core: ^19.4.1
     rimraf: ^3.0.2
+    uuid: ^10.0.0
   languageName: unknown
   linkType: soft
 
@@ -5236,6 +5237,15 @@ fsevents@~2.3.2:
   version: 1.0.1
   resolution: "utils-merge@npm:1.0.1"
   checksum: c81095493225ecfc28add49c106ca4f09cdf56bc66731aa8dabc2edbbccb1e1bfe2de6a115e5c6a380d3ea166d1636410b62ef216bb07b3feb1cfde1d95d5080
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "uuid@npm:10.0.0"
+  bin:
+    uuid: dist/bin/uuid
+  checksum: 4b81611ade2885d2313ddd8dc865d93d8dccc13ddf901745edca8f86d99bc46d7a330d678e7532e7ebf93ce616679fb19b2e3568873ac0c14c999032acb25869
   languageName: node
   linkType: hard
 

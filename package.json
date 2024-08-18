@@ -13,7 +13,8 @@
     "express": "^4.18.2",
     "jimp": "^0.16.2",
     "merge-img": "^2.1.3",
-    "puppeteer-core": "^19.4.1"
+    "puppeteer-core": "^19.4.1",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@serverless-devs/s": "^2.1.7",
