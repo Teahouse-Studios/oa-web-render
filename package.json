@@ -6,19 +6,19 @@
     "deploy": "s deploy -t s.yaml"
   },
   "dependencies": {
-    "@vercel/ncc": "^0.36.0",
-    "body-parser": "^1.20.1",
+    "@vercel/ncc": "^0.38.1",
+    "body-parser": "^1.20.3",
     "compression": "^1.7.4",
-    "dotenv": "^10.0.0",
-    "express": "^4.18.2",
-    "jimp": "^0.16.2",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "jimp": "^1.6.0",
     "merge-img": "^2.1.3",
-    "puppeteer-core": "^19.4.1",
+    "puppeteer-core": "^23.4.0",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
-    "@serverless-devs/s": "^2.1.7",
-    "nodemon": "^2.0.20",
-    "rimraf": "^3.0.2"
+    "@serverless-devs/s": "^3.1.1",
+    "nodemon": "^3.1.7",
+    "rimraf": "^6.0.1"
   }
 }
