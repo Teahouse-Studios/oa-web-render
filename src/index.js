@@ -44,6 +44,7 @@ async function makeScreenshot(page, el) {
   const images = []
   // https://bugs.chromium.org/p/chromium/issues/detail?id=770769
   let total_content_height = contentSize.y
+  console.log('contentsize: ' + contentSize.height)
   for (let ypos = contentSize.y; ypos < contentSize.height + contentSize.y; ypos += maxScreenshotHeight) {
     total_content_height += maxScreenshotHeight
     let content_height = maxScreenshotHeight
@@ -51,7 +52,7 @@ async function makeScreenshot(page, el) {
       content_height = contentSize.height - total_content_height + maxScreenshotHeight + contentSize.y
     }
     let r = await el.screenshot({
-      type: 'jpeg', quality: 90, encoding: 'binary', clip: {
+      type: 'jpeg', quality: 90, encoding: 'base64', clip: {
         x: contentSize.x,
         y: ypos,
         width: contentSize.width,
@@ -59,12 +60,8 @@ async function makeScreenshot(page, el) {
       }
     });
     images.push(r)
-    let result = await mergeImg(images, { direction: true })
-    let read = await new Promise((resolve) => {
-      result.getBuffer(Jimp.MIME_JPEG, (err, buf) => resolve(buf))
-    })
-    return read
   }
+  return JSON.stringify(images)
 }
 
 async function addCountBox(page, selected_element, endtime) {
@@ -199,7 +196,7 @@ app.use(require('body-parser').json({
       const el = await page.$(selector)
       const read = await makeScreenshot(page, el)
       res.writeHead(200, {
-        'Content-Type': 'image/jpeg',
+        'Content-Type': 'application/json',
         'Content-Length': read.length,
         'Tracing': tracing ? tracing_json : null
       });
@@ -310,7 +307,7 @@ app.use(require('body-parser').json({
 
       const read = await makeScreenshot(page, el)
       res.writeHead(200, {
-        'Content-Type': 'image/jpeg',
+        'Content-Type': 'application/json',
         'Content-Length': read.length,
         'Tracing': tracing ? tracing_json : null
       });
@@ -444,7 +441,7 @@ app.use(require('body-parser').json({
 
 
       res.writeHead(200, {
-        'Content-Type': 'image/jpeg',
+        'Content-Type': 'application/json',
         'Content-Length': read.length,
         'Tracing': tracing ? tracing_json : null
       });
