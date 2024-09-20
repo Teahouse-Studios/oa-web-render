@@ -44,14 +44,15 @@ async function makeScreenshot(page, el) {
   const images = []
   // https://bugs.chromium.org/p/chromium/issues/detail?id=770769
   let total_content_height = contentSize.y
-  console.log('contentsize: ' + contentSize.height)
+  // console.log('contentsize: ' + contentSize.height)
   for (let ypos = contentSize.y; ypos < contentSize.height + contentSize.y; ypos += maxScreenshotHeight) {
     total_content_height += maxScreenshotHeight
     let content_height = maxScreenshotHeight
     if (total_content_height > contentSize.height + contentSize.y) {
       content_height = contentSize.height - total_content_height + maxScreenshotHeight + contentSize.y
     }
-    let r = await el.screenshot({
+    // console.log(contentSize.x, ypos, contentSize.width, content_height)
+    let r = await page.screenshot({
       type: 'jpeg', quality: 90, encoding: 'base64', clip: {
         x: contentSize.x,
         y: ypos,
