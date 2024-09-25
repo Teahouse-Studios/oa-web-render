@@ -7,18 +7,19 @@ const { resolve } = require('path')
 require('dotenv').config({ path: resolve(__dirname, '../.env') })
 const express = require('express')
 const puppeteer = require(process.env.NODE_ENV === 'production' ? 'puppeteer' : 'puppeteer-core')
-const mergeImg = require('merge-img')
 const compression = require('compression')
-const Jimp = require('jimp')
 const fs = require('fs')
 const uuid = require('uuid')
 const cwd = process.cwd()
 const cache_path = cwd + '/cache/'
 
-if (fs.existsSync(cache_path)) {
-  fs.rmSync(cache_path, { recursive: true, force: true });
+if (debug){
+  if (fs.existsSync(cache_path)) {
+    fs.rmSync(cache_path, { recursive: true, force: true });
+  }
+  fs.mkdirSync(cache_path)
 }
-fs.mkdirSync(cache_path)
+
 
 const custom_css = `
 span.heimu a.external, span.heimu a.external:visited, span.heimu a.extiw, span.heimu a.extiw:visited {
