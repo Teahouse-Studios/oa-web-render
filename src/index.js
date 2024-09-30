@@ -107,7 +107,7 @@ app.use(require('body-parser').json({
         width: 1280,
         height: 720
       })
-      await page.goto(url, { waitUntil: "networkidle2" })
+      await page.goto(url, { waitUntil: "networkidle0" })
       if (css) {
         page.addStyleTag({ 'content': css })
       }
@@ -234,10 +234,10 @@ app.use(require('body-parser').json({
         height
       })
       if (content) {
-        await page.setContent(content, { waitUntil: 'networkidle2' });
+        await page.setContent(content, { waitUntil: 'networkidle0' });
       } else if (url) {
         await page.setUserAgent(user_agent)
-        await page.goto(url, { waitUntil: "networkidle2", timeout: 0 })
+        await page.goto(url, { waitUntil: "networkidle0", timeout: 0 })
       } else {
         res.status(500).json({
           message: 'A url or content must be specified.'
@@ -344,10 +344,10 @@ app.use(require('body-parser').json({
         height
       })
       if (content) {
-        await page.setContent(content, { waitUntil: 'networkidle2' });
+        await page.setContent(content, { waitUntil: 'networkidle0' });
       } else if (url) {
         await page.setUserAgent(user_agent)
-        await page.goto(url, { waitUntil: "networkidle2" })
+        await page.goto(url, { waitUntil: "networkidle0" })
       } else {
         res.status(500).json({
           message: 'A url or content must be specified.'
@@ -466,7 +466,7 @@ app.use(require('body-parser').json({
         width: 1280,
         height: 720
       })
-      const r = await page.goto(url, { waitUntil: "networkidle2" })
+      const r = await page.goto(url, { waitUntil: "networkidle0" })
       if (r.headers()['content-type']) {
         res.setHeader('content-type', r.headers()['content-type'])
       }
