@@ -40,6 +40,7 @@ span.heimu a.external, span.heimu a.external:visited, span.heimu a.extiw, span.h
 
 async function makeScreenshot(page, el) {
   const contentSize = await el.boundingBox()
+  await el.scrollIntoView()
   const dpr = page.viewport().deviceScaleFactor || 1;
   const maxScreenshotHeight = Math.floor(8 * 1024 / dpr)
   const images = []
@@ -52,6 +53,10 @@ async function makeScreenshot(page, el) {
     if (total_content_height > contentSize.height + contentSize.y) {
       content_height = contentSize.height - total_content_height + maxScreenshotHeight + contentSize.y
     }
+    await page.evaluate((xpos, ypos) => {
+      window.scroll(xpos, ypos)
+    }, contentSize.x, ypos)
+    await page.waitForNetworkIdle()
     // console.log(contentSize.x, ypos, contentSize.width, content_height)
     let r = await page.screenshot({
       type: 'jpeg', quality: 90, encoding: 'base64', clip: {
