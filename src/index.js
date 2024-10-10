@@ -13,7 +13,7 @@ const uuid = require('uuid')
 const cwd = process.cwd()
 const cache_path = cwd + '/cache/'
 
-if (debug){
+if (debug) {
   if (fs.existsSync(cache_path)) {
     fs.rmSync(cache_path, { recursive: true, force: true });
   }
@@ -39,8 +39,12 @@ span.heimu a.external, span.heimu a.external:visited, span.heimu a.extiw, span.h
 
 
 async function makeScreenshot(page, el) {
-  const contentSize = await el.boundingBox()
+  await page.waitForNetworkIdle()
+  await page.evaluate(() => {
+    window.scroll(0, 0)
+  })
   await el.scrollIntoView()
+  const contentSize = await el.boundingBox()
   const dpr = page.viewport().deviceScaleFactor || 1;
   const maxScreenshotHeight = Math.floor(8 * 1024 / dpr)
   const images = []
@@ -368,7 +372,7 @@ app.use(require('body-parser').json({
         const levels = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6']
         let sec = document.getElementById(section).parentNode
         const sec_level = sec.tagName
-        if (sec.parentNode.className.includes('ext-discussiontools-init-section')){ // wo yi ding yao sha le ni men
+        if (sec.parentNode.className.includes('ext-discussiontools-init-section')) { // wo yi ding yao sha le ni men
           sec = sec.parentNode
         }
         const nbox = document.createElement('div')
@@ -385,19 +389,19 @@ app.use(require('body-parser').json({
           if (next_sibling.tagName == 'DIV' && next_sibling.className.includes('ext-discussiontools-init-section')) { // wo yi ding yao sha le ni men
             let child = next_sibling.firstChild
             let bf = false
-            while(child){
-              if (levels.includes(child.tagName)){
-                if (levels.indexOf(child.tagName) <= levels.indexOf(sec_level)){
+            while (child) {
+              if (levels.includes(child.tagName)) {
+                if (levels.indexOf(child.tagName) <= levels.indexOf(sec_level)) {
                   bf = true
                   break
                 }
               }
               child = child.nextSibling
             }
-            if (bf){
+            if (bf) {
               break
             }
-            
+
 
           }
           nbox.appendChild(next_sibling.cloneNode(true))
