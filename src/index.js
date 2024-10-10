@@ -43,14 +43,14 @@ async function makeScreenshot(page, el) {
   await page.evaluate(() => {
     window.scroll(0, 0)
   })
-  await el.scrollIntoView()
+  // await el.scrollIntoView()
   const contentSize = await el.boundingBox()
   const dpr = page.viewport().deviceScaleFactor || 1;
   const maxScreenshotHeight = Math.floor(8 * 1024 / dpr)
   const images = []
   // https://bugs.chromium.org/p/chromium/issues/detail?id=770769
   let total_content_height = contentSize.y
-  // console.log('contentsize: ' + contentSize.height)
+  console.log('contentsize: ' + contentSize.height)
   for (let ypos = contentSize.y; ypos < contentSize.height + contentSize.y; ypos += maxScreenshotHeight) {
     total_content_height += maxScreenshotHeight
     let content_height = maxScreenshotHeight
@@ -61,7 +61,7 @@ async function makeScreenshot(page, el) {
       window.scroll(xpos, ypos)
     }, contentSize.x, ypos)
     await page.waitForNetworkIdle()
-    // console.log(contentSize.x, ypos, contentSize.width, content_height)
+    console.log(contentSize.x, ypos, contentSize.width, content_height)
     let r = await page.screenshot({
       type: 'jpeg', quality: 90, encoding: 'base64', clip: {
         x: contentSize.x,
